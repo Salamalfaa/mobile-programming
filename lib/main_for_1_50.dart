@@ -74,7 +74,7 @@ class HalamanUtama extends StatelessWidget {
                         'Setiap baris dibuat oleh for loop. Panjang garis mengikuti besar angkanya.',
                         style: TextStyle(
                           fontSize: 16,
-                          color: Palet.tinta.withOpacity(0.65),
+                          color: Palet.tinta.withValues(alpha: 0.65),
                         ),
                       ),
                     ],

@@ -1,5 +1,1 @@
-package com.alfariscorporation.tugaspeminjaman
-
-import io.flutter.embedding.android.FlutterActivity
-
-class MainActivity : FlutterActivity()
+// Unused legacy package location - active MainActivity is in com.mjamiltugasmobile.tugasmobileprogramingjamil

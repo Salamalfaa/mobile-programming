@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'mainfor1-50.dart' as for_loop;
+import 'main_for_1_50.dart' as for_loop;
 import 'mainkategoriumur.dart' as if_else;
 import 'mainwhilekelipatan3.dart' as while_loop;
 import 'namabulan.dart' as switch_case;
+import 'widgetlayout.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -68,6 +67,14 @@ class MenuUtamaPage extends StatelessWidget {
             subtitle: 'Latihan Bab 5 - Control Flow (Switch)',
             icon: Icons.calendar_month,
             page: const switch_case.HalamanUtama(),
+          ),
+          const SizedBox(height: 12),
+          _buildMenuItem(
+            context,
+            title: '5. Widget Layout & Design Tokens',
+            subtitle: 'Latihan UI/UX - Tailwind & Bootstrap Style (Lumina Auth)',
+            icon: Icons.dashboard_customize_rounded,
+            page: const AuthApp(),
           ),
         ],
       ),

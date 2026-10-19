@@ -82,7 +82,7 @@ class _HalamanUtamaState extends State<HalamanUtama> {
                     'Dihasilkan oleh while loop yang berhenti saat angka lebih dari 15.',
                     style: TextStyle(
                       fontSize: 16,
-                      color: Palet.tinta.withOpacity(0.65),
+                      color: Palet.tinta.withValues(alpha: 0.65),
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -206,7 +206,7 @@ class _BarisHasil extends StatelessWidget {
                 height: 38,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: warnaDasar.withOpacity(0.12),
+                  color: warnaDasar.withValues(alpha: 0.12),
                   shape: BoxShape.circle,
                 ),
                 child: Text(
@@ -236,7 +236,7 @@ class _BarisHasil extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                   color: terakhir
                       ? Palet.koral
-                      : Palet.tinta.withOpacity(0.55),
+                      : Palet.tinta.withValues(alpha: 0.55),
                 ),
               ),
             ],

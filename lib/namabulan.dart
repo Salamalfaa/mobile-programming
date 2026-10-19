@@ -157,7 +157,7 @@ class _HalamanUtamaState extends State<HalamanUtama> {
                     'Ketik angka bulan, lalu lihat jumlah harinya.',
                     style: TextStyle(
                       fontSize: 16,
-                      color: Palet.tinta.withOpacity(0.65),
+                      color: Palet.tinta.withValues(alpha: 0.65),
                     ),
                   ),
                   const SizedBox(height: 28),
@@ -210,7 +210,7 @@ class _KartuInput extends StatelessWidget {
         borderRadius: BorderRadius.circular(28),
         boxShadow: [
           BoxShadow(
-            color: Palet.tinta.withOpacity(0.06),
+            color: Palet.tinta.withValues(alpha: 0.06),
             blurRadius: 24,
             offset: const Offset(0, 10),
           ),
@@ -239,7 +239,7 @@ class _KartuInput extends StatelessWidget {
               errorText: galat,
               errorMaxLines: 2,
               filled: true,
-              fillColor: Palet.tealMuda.withOpacity(0.45),
+              fillColor: Palet.tealMuda.withValues(alpha: 0.45),
               prefixIcon: const Icon(Icons.calendar_month_rounded,
                   color: Palet.teal),
               suffixIcon: IconButton(
@@ -348,7 +348,7 @@ class _KartuHasil extends StatelessWidget {
               'Pada tahun kabisat, Februari memiliki 29 hari.',
               style: TextStyle(
                 fontSize: 14,
-                color: Palet.tealMuda.withOpacity(0.85),
+                color: Palet.tealMuda.withValues(alpha: 0.85),
               ),
             ),
           ],
@@ -393,7 +393,7 @@ class _GridHari extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: terakhir
                         ? Palet.kuning
-                        : Colors.white.withOpacity(0.1),
+                        : Colors.white.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Text(

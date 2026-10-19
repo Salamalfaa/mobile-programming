@@ -130,7 +130,7 @@ class _HalamanUtamaState extends State<HalamanUtama> {
                     'Isi usia atau geser penggeser, kategorinya langsung berubah.',
                     style: TextStyle(
                       fontSize: 16,
-                      color: _tinta.withOpacity(0.65),
+                      color: _tinta.withValues(alpha: 0.65),
                     ),
                   ),
                   const SizedBox(height: 28),
@@ -143,7 +143,7 @@ class _HalamanUtamaState extends State<HalamanUtama> {
                       borderRadius: BorderRadius.circular(28),
                       boxShadow: [
                         BoxShadow(
-                          color: _tinta.withOpacity(0.06),
+                          color: _tinta.withValues(alpha: 0.06),
                           blurRadius: 24,
                           offset: const Offset(0, 10),
                         ),
@@ -245,7 +245,7 @@ class _KartuHasil extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 17,
                   fontWeight: FontWeight.w600,
-                  color: warnaTeks.withOpacity(0.85),
+                  color: warnaTeks.withValues(alpha: 0.85),
                 ),
               ),
             ],
@@ -270,7 +270,7 @@ class _KartuHasil extends StatelessWidget {
             k?.rentang ?? 'Isi usia untuk melihat kategorinya.',
             style: TextStyle(
               fontSize: 15,
-              color: warnaTeks.withOpacity(0.8),
+              color: warnaTeks.withValues(alpha: 0.8),
             ),
           ),
           const SizedBox(height: 24),
@@ -320,7 +320,7 @@ class _JalurUsia extends StatelessWidget {
                           height: 8,
                           margin: const EdgeInsets.only(right: 3),
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.9),
+                            color: Colors.white.withValues(alpha: 0.9),
                             borderRadius: BorderRadius.circular(4),
                             border: Border.all(
                               color: s.$2.warna,
@@ -353,7 +353,7 @@ class _JalurUsia extends StatelessWidget {
                       borderRadius: BorderRadius.circular(9),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.25),
+                          color: Colors.black.withValues(alpha: 0.25),
                           blurRadius: 6,
                           offset: const Offset(0, 2),
                         ),
