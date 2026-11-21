@@ -112,17 +112,27 @@ class _BookFormDialogState extends State<BookFormDialog> {
   Widget build(BuildContext context) {
     final isEdit = widget.book != null;
     final maxYear = DateTime.now().year;
+    final screenSize = MediaQuery.sizeOf(context);
+    final contentWidth = (screenSize.width - 80).clamp(240.0, 760.0).toDouble();
+    final contentHeight = (screenSize.height - 280)
+        .clamp(220.0, 520.0)
+        .toDouble();
+    final isWide = screenSize.width >= 760;
+
     return AlertDialog(
-      icon: Container(
-        width: 52,
-        height: 52,
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.primaryContainer,
-          borderRadius: BorderRadius.circular(17),
-        ),
-        child: Icon(
-          isEdit ? Icons.edit_rounded : Icons.add_rounded,
-          color: Theme.of(context).colorScheme.primary,
+      insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      icon: Center(
+        child: Container(
+          width: 52,
+          height: 52,
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.primaryContainer,
+            borderRadius: BorderRadius.circular(17),
+          ),
+          child: Icon(
+            isEdit ? Icons.edit_rounded : Icons.add_rounded,
+            color: Theme.of(context).colorScheme.primary,
+          ),
         ),
       ),
       title: Text(
@@ -130,76 +140,116 @@ class _BookFormDialogState extends State<BookFormDialog> {
         textAlign: TextAlign.center,
       ),
       content: SizedBox(
-        width: 440,
-        child: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (_error != null)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: Text(
-                      _error!,
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.error,
+        width: contentWidth,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: contentHeight),
+          child: Form(
+            key: _formKey,
+            child: SingleChildScrollView(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final fieldWidth = isWide
+                      ? (constraints.maxWidth - 12) / 2
+                      : constraints.maxWidth;
+
+                  return Wrap(
+                    spacing: 12,
+                    children: [
+                      if (_error != null)
+                        SizedBox(
+                          width: constraints.maxWidth,
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: Text(
+                              _error!,
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.error,
+                              ),
+                            ),
+                          ),
+                        ),
+                      SizedBox(
+                        width: fieldWidth,
+                        child: _field(
+                          _titleCtrl,
+                          'Judul',
+                          'title',
+                          required: true,
+                          maxLength: 255,
+                        ),
                       ),
-                    ),
-                  ),
-                _field(
-                  _titleCtrl,
-                  'Judul',
-                  'title',
-                  required: true,
-                  maxLength: 255,
-                ),
-                _field(
-                  _authorCtrl,
-                  'Penulis',
-                  'author',
-                  required: true,
-                  maxLength: 255,
-                ),
-                _field(_publisherCtrl, 'Penerbit', 'publisher', maxLength: 255),
-                _field(
-                  _isbnCtrl,
-                  'ISBN',
-                  'isbn',
-                  required: true,
-                  maxLength: 20,
-                ),
-                _field(
-                  _yearCtrl,
-                  'Tahun terbit',
-                  'published_year',
-                  required: true,
-                  digitsOnly: true,
-                  validator: (value) {
-                    final year = int.tryParse(value);
-                    if (year == null || year < 1000 || year > maxYear) {
-                      return 'Tahun harus antara 1000 dan $maxYear';
-                    }
-                    return null;
-                  },
-                ),
-                _field(
-                  _stockCtrl,
-                  'Stok',
-                  'stock',
-                  required: true,
-                  digitsOnly: true,
-                  validator: (value) => int.tryParse(value) == null
-                      ? 'Stok harus angka ≥ 0'
-                      : null,
-                ),
-                _field(
-                  _descriptionCtrl,
-                  'Deskripsi',
-                  'description',
-                  maxLines: 3,
-                ),
-              ],
+                      SizedBox(
+                        width: fieldWidth,
+                        child: _field(
+                          _authorCtrl,
+                          'Penulis',
+                          'author',
+                          required: true,
+                          maxLength: 255,
+                        ),
+                      ),
+                      SizedBox(
+                        width: fieldWidth,
+                        child: _field(
+                          _publisherCtrl,
+                          'Penerbit',
+                          'publisher',
+                          maxLength: 255,
+                        ),
+                      ),
+                      SizedBox(
+                        width: fieldWidth,
+                        child: _field(
+                          _isbnCtrl,
+                          'ISBN',
+                          'isbn',
+                          required: true,
+                          maxLength: 20,
+                        ),
+                      ),
+                      SizedBox(
+                        width: fieldWidth,
+                        child: _field(
+                          _yearCtrl,
+                          'Tahun terbit',
+                          'published_year',
+                          required: true,
+                          digitsOnly: true,
+                          validator: (value) {
+                            final year = int.tryParse(value);
+                            if (year == null || year < 1000 || year > maxYear) {
+                              return 'Tahun harus antara 1000 dan $maxYear';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                      SizedBox(
+                        width: fieldWidth,
+                        child: _field(
+                          _stockCtrl,
+                          'Stok',
+                          'stock',
+                          required: true,
+                          digitsOnly: true,
+                          validator: (value) => int.tryParse(value) == null
+                              ? 'Stok harus angka ≥ 0'
+                              : null,
+                        ),
+                      ),
+                      SizedBox(
+                        width: constraints.maxWidth,
+                        child: _field(
+                          _descriptionCtrl,
+                          'Deskripsi',
+                          'description',
+                          maxLines: 3,
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
             ),
           ),
         ),

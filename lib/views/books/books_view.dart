@@ -84,16 +84,18 @@ class _BooksViewState extends ConsumerState<BooksView> {
       context: context,
       animationStyle: AppTheme.dialogAnimation,
       builder: (dialogContext) => AlertDialog(
-        icon: Container(
-          width: 52,
-          height: 52,
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.errorContainer,
-            borderRadius: BorderRadius.circular(17),
-          ),
-          child: Icon(
-            Icons.delete_outline_rounded,
-            color: Theme.of(context).colorScheme.error,
+        icon: Center(
+          child: Container(
+            width: 52,
+            height: 52,
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.errorContainer,
+              borderRadius: BorderRadius.circular(17),
+            ),
+            child: Icon(
+              Icons.delete_outline_rounded,
+              color: Theme.of(context).colorScheme.error,
+            ),
           ),
         ),
         title: const Text('Hapus buku?', textAlign: TextAlign.center),

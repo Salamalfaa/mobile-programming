@@ -144,16 +144,18 @@ class BookCard extends StatelessWidget {
       context: context,
       animationStyle: AppTheme.dialogAnimation,
       builder: (dialogContext) => AlertDialog(
-        icon: Container(
-          width: 54,
-          height: 54,
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primaryContainer,
-            borderRadius: BorderRadius.circular(18),
-          ),
-          child: Icon(
-            Icons.auto_stories_rounded,
-            color: Theme.of(context).colorScheme.primary,
+        icon: Center(
+          child: Container(
+            width: 54,
+            height: 54,
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primaryContainer,
+              borderRadius: BorderRadius.circular(18),
+            ),
+            child: Icon(
+              Icons.auto_stories_rounded,
+              color: Theme.of(context).colorScheme.primary,
+            ),
           ),
         ),
         title: Text(book.title, textAlign: TextAlign.center),
