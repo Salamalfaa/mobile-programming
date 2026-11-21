@@ -74,24 +74,36 @@ class _BookFormDialogState extends State<BookFormDialog> {
       _fieldErrors = const {};
     });
 
-    final error = await widget.onSubmit({
-      'title': _titleCtrl.text.trim(),
-      'author': _authorCtrl.text.trim(),
-      'publisher': _nullIfEmpty(_publisherCtrl.text),
-      'isbn': _isbnCtrl.text.trim(),
-      'published_year': int.parse(_yearCtrl.text.trim()),
-      'stock': int.parse(_stockCtrl.text.trim()),
-      'description': _nullIfEmpty(_descriptionCtrl.text),
-    });
+    final ApiException? error;
+    try {
+      error = await widget.onSubmit({
+        'title': _titleCtrl.text.trim(),
+        'author': _authorCtrl.text.trim(),
+        'publisher': _nullIfEmpty(_publisherCtrl.text),
+        'isbn': _isbnCtrl.text.trim(),
+        'published_year': int.parse(_yearCtrl.text.trim()),
+        'stock': int.parse(_stockCtrl.text.trim()),
+        'description': _nullIfEmpty(_descriptionCtrl.text),
+      });
+    } on Object {
+      if (!mounted) return;
+      setState(() {
+        _saving = false;
+        _error = 'Terjadi kesalahan. Periksa koneksi lalu coba lagi.';
+      });
+      return;
+    }
 
     if (!mounted) return;
+    final fieldErrors = error?.fieldErrors ?? const <String, String>{};
+    final errorMessage = error?.message;
     if (error == null) {
       Navigator.pop(context, true);
     } else {
       setState(() {
         _saving = false;
-        _fieldErrors = error.fieldErrors;
-        _error = error.fieldErrors.isEmpty ? error.message : null;
+        _fieldErrors = fieldErrors;
+        _error = fieldErrors.isEmpty ? errorMessage : null;
       });
     }
   }
@@ -101,7 +113,22 @@ class _BookFormDialogState extends State<BookFormDialog> {
     final isEdit = widget.book != null;
     final maxYear = DateTime.now().year;
     return AlertDialog(
-      title: Text(isEdit ? 'Edit Buku' : 'Tambah Buku'),
+      icon: Container(
+        width: 52,
+        height: 52,
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.primaryContainer,
+          borderRadius: BorderRadius.circular(17),
+        ),
+        child: Icon(
+          isEdit ? Icons.edit_rounded : Icons.add_rounded,
+          color: Theme.of(context).colorScheme.primary,
+        ),
+      ),
+      title: Text(
+        isEdit ? 'Perbarui buku' : 'Tambah buku',
+        textAlign: TextAlign.center,
+      ),
       content: SizedBox(
         width: 440,
         child: Form(
@@ -205,28 +232,42 @@ class _BookFormDialogState extends State<BookFormDialog> {
     int maxLines = 1,
     int? maxLength,
     String? Function(String value)? validator,
-  }) => Padding(
-    padding: const EdgeInsets.only(bottom: 10),
-    child: TextFormField(
-      controller: controller,
-      enabled: !_saving,
-      decoration: InputDecoration(
-        labelText: required ? '$label *' : label,
-        errorText: _fieldErrors[apiField],
-        counterText: '',
+  }) {
+    final icon = switch (apiField) {
+      'title' => Icons.title_rounded,
+      'author' => Icons.person_outline_rounded,
+      'publisher' => Icons.business_rounded,
+      'isbn' => Icons.qr_code_rounded,
+      'published_year' => Icons.calendar_month_rounded,
+      'stock' => Icons.inventory_2_outlined,
+      'description' => Icons.notes_rounded,
+      _ => Icons.edit_note_rounded,
+    };
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: TextFormField(
+        controller: controller,
+        enabled: !_saving,
+        decoration: InputDecoration(
+          labelText: required ? '$label *' : label,
+          prefixIcon: Icon(icon),
+          errorText: _fieldErrors[apiField],
+          counterText: '',
+        ),
+        keyboardType: digitsOnly ? TextInputType.number : TextInputType.text,
+        inputFormatters: digitsOnly
+            ? [FilteringTextInputFormatter.digitsOnly]
+            : null,
+        maxLines: maxLines,
+        maxLength: maxLength,
+        validator: (value) {
+          final text = value?.trim() ?? '';
+          if (required && text.isEmpty) return '$label wajib diisi';
+          if (text.isNotEmpty && validator != null) return validator(text);
+          return null;
+        },
       ),
-      keyboardType: digitsOnly ? TextInputType.number : TextInputType.text,
-      inputFormatters: digitsOnly
-          ? [FilteringTextInputFormatter.digitsOnly]
-          : null,
-      maxLines: maxLines,
-      maxLength: maxLength,
-      validator: (value) {
-        final text = value?.trim() ?? '';
-        if (required && text.isEmpty) return '$label wajib diisi';
-        if (text.isNotEmpty && validator != null) return validator(text);
-        return null;
-      },
-    ),
-  );
+    );
+  }
 }

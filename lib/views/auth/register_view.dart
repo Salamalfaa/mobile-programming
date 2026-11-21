@@ -61,7 +61,7 @@ class _RegisterViewState extends ConsumerState<RegisterView> {
                 controller: _nameCtrl,
                 decoration: InputDecoration(
                   labelText: 'Nama',
-                  prefixIcon: const Icon(Icons.person_outline),
+                  prefixIcon: const Icon(Icons.person_outline_rounded),
                   errorText: fields['name'],
                 ),
                 textInputAction: TextInputAction.next,
@@ -75,7 +75,7 @@ class _RegisterViewState extends ConsumerState<RegisterView> {
                 controller: _emailCtrl,
                 decoration: InputDecoration(
                   labelText: 'Email',
-                  prefixIcon: const Icon(Icons.email_outlined),
+                  prefixIcon: const Icon(Icons.alternate_email_rounded),
                   errorText: fields['email'],
                 ),
                 keyboardType: TextInputType.emailAddress,
@@ -94,14 +94,16 @@ class _RegisterViewState extends ConsumerState<RegisterView> {
                 controller: _passwordCtrl,
                 decoration: InputDecoration(
                   labelText: 'Password',
-                  prefixIcon: const Icon(Icons.lock_outline),
+                  prefixIcon: const Icon(Icons.lock_outline_rounded),
                   errorText: fields['password'],
                   suffixIcon: IconButton(
                     tooltip: _obscure
                         ? 'Tampilkan password'
                         : 'Sembunyikan password',
                     icon: Icon(
-                      _obscure ? Icons.visibility : Icons.visibility_off,
+                      _obscure
+                          ? Icons.visibility_rounded
+                          : Icons.visibility_off_rounded,
                     ),
                     onPressed: () => setState(() => _obscure = !_obscure),
                   ),
@@ -117,7 +119,7 @@ class _RegisterViewState extends ConsumerState<RegisterView> {
                 controller: _confirmCtrl,
                 decoration: const InputDecoration(
                   labelText: 'Konfirmasi password',
-                  prefixIcon: Icon(Icons.lock_reset_outlined),
+                  prefixIcon: Icon(Icons.lock_reset_rounded),
                 ),
                 obscureText: _obscure,
                 textInputAction: TextInputAction.done,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/routes/app_router.dart';
+import '../../core/theme/app_theme.dart';
 import '../../models/book_model.dart';
 import '../../viewmodels/auth_vm.dart';
 import '../../viewmodels/book_vm.dart';
@@ -66,6 +67,7 @@ class _BooksViewState extends ConsumerState<BooksView> {
     final saved = await showDialog<bool>(
       context: context,
       barrierDismissible: false,
+      animationStyle: AppTheme.dialogAnimation,
       builder: (_) => BookFormDialog(
         book: book,
         onSubmit: (payload) =>
@@ -80,10 +82,25 @@ class _BooksViewState extends ConsumerState<BooksView> {
   Future<void> _confirmDelete(BookModel book) async {
     final confirmed = await showDialog<bool>(
       context: context,
+      animationStyle: AppTheme.dialogAnimation,
       builder: (dialogContext) => AlertDialog(
-        icon: const Icon(Icons.delete_outline),
-        title: const Text('Hapus Buku'),
-        content: Text('Hapus "${book.title}" dari koleksi?'),
+        icon: Container(
+          width: 52,
+          height: 52,
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.errorContainer,
+            borderRadius: BorderRadius.circular(17),
+          ),
+          child: Icon(
+            Icons.delete_outline_rounded,
+            color: Theme.of(context).colorScheme.error,
+          ),
+        ),
+        title: const Text('Hapus buku?', textAlign: TextAlign.center),
+        content: Text(
+          '“${book.title}” akan dihapus dari koleksi perpustakaan.',
+          textAlign: TextAlign.center,
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext, false),
@@ -94,7 +111,7 @@ class _BooksViewState extends ConsumerState<BooksView> {
             style: FilledButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.error,
             ),
-            child: const Text('Hapus'),
+            child: const Text('Ya, hapus'),
           ),
         ],
       ),
@@ -123,7 +140,7 @@ class _BooksViewState extends ConsumerState<BooksView> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(
-                Icons.cloud_off_outlined,
+                Icons.cloud_off_rounded,
                 size: 48,
                 color: Theme.of(context).colorScheme.outline,
               ),
@@ -132,7 +149,7 @@ class _BooksViewState extends ConsumerState<BooksView> {
               const SizedBox(height: 16),
               FilledButton.icon(
                 onPressed: () => _vm.load(),
-                icon: const Icon(Icons.refresh),
+                icon: const Icon(Icons.refresh_rounded),
                 label: const Text('Coba lagi'),
               ),
             ],
@@ -147,21 +164,55 @@ class _BooksViewState extends ConsumerState<BooksView> {
           ? ListView(
               physics: const AlwaysScrollableScrollPhysics(),
               children: [
-                const SizedBox(height: 110),
-                Icon(
-                  Icons.menu_book_outlined,
-                  size: 52,
-                  color: Theme.of(context).colorScheme.outline,
+                const SizedBox(height: 72),
+                Center(
+                  child: Container(
+                    width: 78,
+                    height: 78,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primaryContainer,
+                      borderRadius: BorderRadius.circular(26),
+                    ),
+                    child: Icon(
+                      Icons.auto_stories_rounded,
+                      size: 36,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 18),
                 Center(
                   child: Text(
                     state.search.isEmpty
-                        ? 'Belum ada buku.'
-                        : 'Tidak ada buku untuk "${state.search}".',
+                        ? 'Koleksi masih kosong'
+                        : 'Buku tidak ditemukan',
+                    style: Theme.of(context).textTheme.titleMedium
+                        ?.copyWith(fontWeight: FontWeight.w700),
                     textAlign: TextAlign.center,
                   ),
                 ),
+                const SizedBox(height: 6),
+                Center(
+                  child: Text(
+                    state.search.isEmpty
+                        ? 'Tambahkan buku pertama untuk mulai mengelola koleksi.'
+                        : 'Coba kata kunci lain untuk menemukan buku.',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                if (state.search.isEmpty) ...[
+                  const SizedBox(height: 18),
+                  Center(
+                    child: FilledButton.icon(
+                      onPressed: () => _openForm(),
+                      icon: const Icon(Icons.add_rounded),
+                      label: const Text('Tambah buku'),
+                    ),
+                  ),
+                ],
               ],
             )
           : ListView.separated(
@@ -222,7 +273,31 @@ class _BooksViewState extends ConsumerState<BooksView> {
         ref.watch(authProvider.select((value) => value.user?.name)) ?? '';
 
     final appBar = AppBar(
-      title: const Text('Daftar Buku'),
+      title: Row(
+        children: [
+          Container(
+            width: 38,
+            height: 38,
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primaryContainer,
+              borderRadius: BorderRadius.circular(13),
+            ),
+            child: Icon(
+              Icons.auto_stories_rounded,
+              size: 21,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+          ),
+          const SizedBox(width: 11),
+          const Expanded(
+            child: Text(
+              'Perpustakaan',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
       bottom: state.loading && state.books.isNotEmpty
           ? const PreferredSize(
               preferredSize: Size.fromHeight(2),
@@ -233,43 +308,91 @@ class _BooksViewState extends ConsumerState<BooksView> {
         IconButton(
           tooltip: 'Muat ulang',
           onPressed: state.loading ? null : () => _vm.load(),
-          icon: const Icon(Icons.refresh),
+          icon: const Icon(Icons.refresh_rounded),
         ),
         IconButton(
           tooltip: 'Logout',
           onPressed: _logout,
-          icon: const Icon(Icons.logout),
+          icon: const Icon(Icons.logout_rounded),
         ),
       ],
     );
     final search = Padding(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+      padding: const EdgeInsets.fromLTRB(20, 4, 20, 12),
       child: TextField(
         controller: _searchCtrl,
         textInputAction: TextInputAction.search,
+        onChanged: (_) => setState(() {}),
         decoration: InputDecoration(
           hintText: 'Cari judul atau penulis',
-          prefixIcon: const Icon(Icons.search),
-          suffixIcon: IconButton(
-            tooltip: 'Hapus pencarian',
-            icon: const Icon(Icons.clear),
-            onPressed: () {
-              _searchCtrl.clear();
-              _vm.load(search: '');
-            },
-          ),
+          prefixIcon: const Icon(Icons.search_rounded),
+          suffixIcon: _searchCtrl.text.isEmpty
+              ? null
+              : IconButton(
+                  tooltip: 'Hapus pencarian',
+                  icon: const Icon(Icons.close_rounded),
+                  onPressed: () {
+                    _searchCtrl.clear();
+                    _vm.load(search: '');
+                    setState(() {});
+                  },
+                ),
         ),
         onSubmitted: (value) => _vm.load(search: value),
       ),
     );
+    final header = Padding(
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Koleksi buku',
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: -0.65,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Temukan dan kelola koleksi perpustakaan.',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 12),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primaryContainer,
+              borderRadius: BorderRadius.circular(99),
+            ),
+            child: Text(
+              '${state.total} buku',
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.primary,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
     final fab = FloatingActionButton.extended(
       onPressed: () => _openForm(),
-      icon: const Icon(Icons.add),
-      label: const Text('Tambah Buku'),
+      icon: const Icon(Icons.add_rounded),
+      label: const Text('Tambah buku'),
     );
     final content = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        header,
         search,
         Expanded(child: _body(state)),
       ],
@@ -291,7 +414,7 @@ class _BooksViewState extends ConsumerState<BooksView> {
               destinations: const [
                 NavigationRailDestination(
                   icon: Icon(Icons.library_books_outlined),
-                  selectedIcon: Icon(Icons.library_books),
+                  selectedIcon: Icon(Icons.library_books_rounded),
                   label: Text('Buku'),
                 ),
               ],

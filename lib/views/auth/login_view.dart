@@ -52,7 +52,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                   controller: _emailCtrl,
                   decoration: InputDecoration(
                     labelText: 'Email',
-                    prefixIcon: const Icon(Icons.email_outlined),
+                    prefixIcon: const Icon(Icons.alternate_email_rounded),
                     errorText: auth.fieldErrors['email'],
                   ),
                   keyboardType: TextInputType.emailAddress,
@@ -73,14 +73,16 @@ class _LoginViewState extends ConsumerState<LoginView> {
                   controller: _passwordCtrl,
                   decoration: InputDecoration(
                     labelText: 'Password',
-                    prefixIcon: const Icon(Icons.lock_outline),
+                    prefixIcon: const Icon(Icons.lock_outline_rounded),
                     errorText: auth.fieldErrors['password'],
                     suffixIcon: IconButton(
                       tooltip: _obscure
                           ? 'Tampilkan password'
                           : 'Sembunyikan password',
                       icon: Icon(
-                        _obscure ? Icons.visibility : Icons.visibility_off,
+                        _obscure
+                            ? Icons.visibility_rounded
+                            : Icons.visibility_off_rounded,
                       ),
                       onPressed: () => setState(() => _obscure = !_obscure),
                     ),
